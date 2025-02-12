@@ -19,7 +19,7 @@ public class EncryptionUtil {
         return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
     }
 
-    public static void encryptPassword(String password) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+    public static String encryptPassword(String password) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         //Get key
         SecretKey key = deriveKey(password);
 
@@ -29,11 +29,14 @@ public class EncryptionUtil {
 
         //Encrypt the password
         byte [] encryptedData = cipher.doFinal(password.getBytes());
-        String messageString = new String(Base64.getEncoder().encode(encryptedData));
 
-        System.out.println("Encrypted message: " + messageString + "\n");
+        //String encryptedPassword = new String(Base64.getEncoder().encode(encryptedData));
+        //System.out.println("Encrypted message: " + encryptedPassword + "\n");
+
+        return new String(Base64.getEncoder().encode(encryptedData));
     }
 
+    //Not working yet
     public static void decryptPassword(String encryptedPassword) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException {
         //Get key
         SecretKey key = deriveKey(encryptedPassword);
