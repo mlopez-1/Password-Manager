@@ -14,7 +14,7 @@ public class PasswordManager {
     public PasswordManager() {
         passwordMap = new HashMap<>();
         fileHandler = new FileHandler();
-        loadPasswordsFromFile(); //Currently does nothing
+        loadPasswordsFromFile();
     }
 
     public void addPassword(String userName, String plaintTextPassword) throws NoSuchPaddingException, IllegalBlockSizeException, InvalidKeySpecException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
@@ -22,6 +22,7 @@ public class PasswordManager {
         passwordMap.put(newPassword.userName, newPassword.password);
         //For debugging
         System.out.println(newPassword.toString());
+        savePasswordsToFile();
     }
 
     //Cant implement for now
@@ -30,11 +31,21 @@ public class PasswordManager {
     }
 
     public void listUsernames() {
-
+        for (String username : passwordMap.keySet()) {
+            System.out.println(username);
+        }
     }
 
-    private void loadPasswordsFromFile() {
-        //Need to create loadPasswords method
-        //passwordMap = fileHandler.loadPasswords();
+    public void loadPasswordsFromFile() {
+        if (fileHandler.fileExists()) {
+            passwordMap = fileHandler.readFile();  // Read passwords from the file into the map
+        } else {
+            System.out.println("No password file detected. Creating a new one.");
+            fileHandler.createFile(passwordMap); // Create a new empty file
+        }
+    }
+
+    private void savePasswordsToFile() {
+        fileHandler.createFile(passwordMap);  // Overwrite the file with the current password map
     }
 }
