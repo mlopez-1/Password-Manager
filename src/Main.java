@@ -2,12 +2,13 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        String masterPassword = null;
         System.out.println("Welcome to Password Manager\n");
         Scanner sc = new Scanner(System.in);
+
         PasswordManager passwordManager = new PasswordManager();
         boolean isFirstRun = passwordManager.isFirstRun();
-
+        byte[] salt = passwordManager.getStoredSalt();
+        String masterPassword = passwordManager.getMasterPassword();
 
         if (!isFirstRun) {
             boolean authenticated = false;
@@ -26,8 +27,6 @@ public class Main {
                 }
             }
         }
-
-        byte[] salt = passwordManager.getStoredSalt();
 
         while (true) {
             System.out.println("1. Create a new password\n");

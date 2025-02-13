@@ -15,14 +15,21 @@ public class PasswordManager {
     private Map<String, String> passwordMap;
     private final FileHandler fileHandler;
     private boolean isFirstRun = false;
+    private String masterPassword;
 
     public PasswordManager(){
         passwordMap = new HashMap<>();
         fileHandler = new FileHandler();
-        try {
-            loadPasswordsFromFile();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (!fileHandler.fileExists()) {
+            masterPassword = setMasterPassword();
+            isFirstRun = true;
+        }
+        else {
+            try {
+                loadPasswordsFromFile();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -30,7 +37,11 @@ public class PasswordManager {
         return isFirstRun;
     }
 
-    public void setMasterPassword() {
+    public String getMasterPassword() {
+        return masterPassword;
+    }
+
+    public String setMasterPassword() {
         Scanner sc = new Scanner(System.in);
         System.out.print("No password file found. Set an initial master password: ");
         String masterPassword = sc.nextLine();
@@ -58,9 +69,12 @@ public class PasswordManager {
             writer.write(encodedSalt + ":" + encodedToken);
             writer.newLine();
             writer.close();
+
+            return masterPassword;
         }
         catch (Exception e) {
             System.out.println("Error while master password: " + e.getMessage());
+            return null;
         }
     }
 
@@ -135,12 +149,7 @@ public class PasswordManager {
     }
 
     public void loadPasswordsFromFile(){
-        if (fileHandler.fileExists()) {
             passwordMap = fileHandler.readFile();  // Read passwords from the file into the map
-        } else {  // Create master password, salt, token, and new file
-            isFirstRun = true;
-            setMasterPassword();
-        }
     }
 
     private void savePasswordsToFile() {
