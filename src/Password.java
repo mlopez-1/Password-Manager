@@ -1,14 +1,14 @@
 public class Password {
-    String userName;
+    String username;
     String password;
 
-    public Password(String userName, String password) {
-        this.userName = userName;
+    public Password(String username, String password) {
+        this.username = username;
         this.password = password;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
     public String getPassword() {
@@ -16,6 +16,6 @@ public class Password {
     }
 
     public String toString() {
-        return userName + ": " + password;
+        return username + ": " + password;
     }
 }

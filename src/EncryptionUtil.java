@@ -1,54 +1,41 @@
 import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
 
 public class EncryptionUtil {
 
-    private static final String saltString = "ykSI1lJLBZw73HaqkQ1cZg==";
-    private static final byte [] decodedSalt = Base64.getDecoder().decode(saltString.getBytes());
-
-    //Generates key for given password
-    private static SecretKey deriveKey(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        KeySpec spec = new PBEKeySpec(password.toCharArray(), decodedSalt, 1024, 128);
+    public static SecretKey deriveKey(String masterPassword, byte[] salt) throws Exception {
+        KeySpec spec = new PBEKeySpec(masterPassword.toCharArray(), salt, 1024, 128);
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
         return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
     }
 
-    public static String encryptPassword(String password) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-        //Get key
-        SecretKey key = deriveKey(password);
+    public static String encryptPassword(String password, String masterPassword, byte[] salt) throws Exception {
+        // Get key
+        SecretKey key = deriveKey(masterPassword, salt);
 
-        //Prep AES cipher to encrypt
+        // Prep AES cipher to encrypt
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, key);
 
-        //Encrypt the password
+        // Encrypt the password
         byte [] encryptedData = cipher.doFinal(password.getBytes());
-
-        //String encryptedPassword = new String(Base64.getEncoder().encode(encryptedData));
-        //System.out.println("Encrypted message: " + encryptedPassword + "\n");
 
         return new String(Base64.getEncoder().encode(encryptedData));
     }
 
-    //Not working yet
-    public static void decryptPassword(String encryptedPassword) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException {
-        //Get key
-        SecretKey key = deriveKey(encryptedPassword);
+    public static String decryptPassword(String encryptedPassword, String masterPassword, byte[] salt) throws Exception{
+        // Get key
+        SecretKey key = deriveKey(masterPassword, salt);
 
-        //Prep AES cipher to decrypt
+        // Prep AES cipher to decrypt
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, key);
 
-        //Decrypt password
+        // Decrypt password
         byte [] decryptedData = cipher.doFinal(Base64.getDecoder().decode(encryptedPassword));
-        String decryptedPassword = new String(decryptedData);
-
-        System.out.println("Password: " + decryptedPassword);
+        return new String(decryptedData);
     }
 }
