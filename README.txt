@@ -1,16 +1,13 @@
-Menu Guide:
+***README***
 
-When the program runs, it will prompt you for a master password (currently just for proof of concept, need to fully implement later)
+If this is the first time running the program, you will be prompted to create a master password.
+Otherwise, enter the master password created before.
 
-Master Password options:
-1. Typing 'master' will give you access to the rest of the menus:
-   - 1. Create new password
-   - 2. Read password
-   - 3. Exit
-   To create a new password, type '1' and follow instructions
-   To read, type '2' and follow instructions
-   To exit, type 3'
+--- Important Master Pass Notes ---
+- Typing 'exit' will quit the program.
+- Typing anything other than master pass will prompt for it again.
+------------------------------------
 
-2. Typing exit will stop the program
-
-3. Typing anything else will prompt for master pass again
+Once master is created/entered:
+- Will be taken to main menu and 4 options will be presented.
+- To select any, type the number associated with the option and follow the subsequent prompts.
